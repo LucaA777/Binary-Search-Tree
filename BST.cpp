@@ -12,7 +12,8 @@ void printTree(Node* tree);
 void print(Node* node, int depth);
 void parseNumbers(Node* &tree, string input);
 void deleteTree(Node* &tree);
-bool searchTree(Node* node, int num);
+Node* searchTree(Node* node, int num);
+void removeFromTree(Node* &tree, int num);
 
 int main() {
 
@@ -53,7 +54,7 @@ int main() {
 			}
 
 			//search the tree for this value
-			bool found = searchTree(tree, num);
+			bool found = searchTree(tree, num) != nullptr;
 
 			cout << "Value" << (found ? " " : " not ") << "found in tree." << endl;
 
@@ -61,6 +62,22 @@ int main() {
 		}
 
 		if (input == "delete") {
+			//get input and make sure it is valid
+			cout << "Enter a number to remove: " << endl;
+			getline(cin, input);
+
+			int num = 0;
+			try {
+				num = stoi(input);
+			}
+			catch(...) {
+				cout << "Invalid input." << endl;
+				continue;
+			}
+
+			//delete the number from the tree
+			removeFromTree(tree, num);
+
 			continue;
 		}
 
@@ -215,15 +232,15 @@ void deleteTree(Node* &tree) {
 	delete tree;
 }
 
-bool searchTree(Node* node, int num) {
+Node* searchTree(Node* node, int num) {
 	//if there is no node, return null
 	if (node == nullptr) {
-		return false;
+		return nullptr;
 	}
 	
 	//if the node matches the value, return true
 	if (node -> getNum() == num) {
-		return true;
+		return node;
 	}
 
 	//if the number is less than the current node, go left, otherwise go right
@@ -234,7 +251,7 @@ bool searchTree(Node* node, int num) {
 		}
 		//if there is no further left, return false
 		else {
-			return false;
+			return nullptr;
 		}
 	}
 	else {
@@ -244,7 +261,25 @@ bool searchTree(Node* node, int num) {
 		}
 		//if there is no further right, return false
 		else {
-			return false;
+			return nullptr;
 		}
+	}
+}
+
+void removeFromTree(Node* &tree, int num) {
+	//get the node to remove
+	Node* node = searchTree(tree, num);	
+	
+	//make sure that the node is not null
+	if (node == nullptr) {
+		cout << "Value not found in tree." << endl;
+		return;
+	}
+
+	//figure out how to handle deletion
+	
+	//if no children, then simply delete
+	if (node -> getLeft() == nullptr && node -> getRight() == nullptr) {
+		
 	}
 }

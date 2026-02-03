@@ -9,6 +9,11 @@ public:
 		right = nullptr;
 	}
 
+	~Node() {
+		left = nullptr;
+		right = nullptr;
+	}
+
 	Node* &getLeft() {
 		return left;
 	}
