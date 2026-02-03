@@ -9,11 +9,11 @@ public:
 		right = nullptr;
 	}
 
-	Node* getLeft() {
+	Node* &getLeft() {
 		return left;
 	}
 
-	Node* getRight() {
+	Node* &getRight() {
 		return right;
 	}
 
@@ -23,6 +23,10 @@ public:
 	
 	void setRight(Node* node) {
 		right = node;
+	}
+
+	int getNum() {
+		return number;
 	}
 
 private:
