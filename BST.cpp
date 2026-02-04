@@ -13,7 +13,7 @@ void print(Node* node, int depth);
 void parseNumbers(Node* &tree, string input);
 void deleteTree(Node* &tree);
 Node* searchTree(Node* node, int num);
-void removeFromTree(Node* &tree, int num);
+void removeFromTree(Node* &node, Node* &parent, int num);
 
 int main() {
 
@@ -76,7 +76,7 @@ int main() {
 			}
 
 			//delete the number from the tree
-			removeFromTree(tree, num);
+			removeFromTree(tree, tree, num);
 
 			continue;
 		}
@@ -266,20 +266,67 @@ Node* searchTree(Node* node, int num) {
 	}
 }
 
-void removeFromTree(Node* &tree, int num) {
-	//get the node to remove
-	Node* node = searchTree(tree, num);	
+void removeFromTree(Node* &node, Node* &parent, int num) {
 	
 	//make sure that the node is not null
-	if (node == nullptr) {
+	if (searchTree(node, num) == nullptr) {
 		cout << "Value not found in tree." << endl;
 		return;
 	}
 
+	//get the chosen node and parent node
+	
+	if (num < node -> getNum()) {
+		if (node -> getLeft() != nullptr) {
+			removeFromTree(node -> getLeft(), node, num);
+		}
+		return;
+	}
+	else if (num > node -> getNum()) {
+		if (node -> getRight() != nullptr) {
+			removeFromTree(node -> getRight(), node, num);
+		}
+		return;
+	}
+
+	cout << "Found node and parent." << endl;
 	//figure out how to handle deletion
 	
 	//if no children, then simply delete
 	if (node -> getLeft() == nullptr && node -> getRight() == nullptr) {
-		
+		cout << "No-child deletion." << endl;
+		//figure out which side of the parent to delete
+		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
+			cout << "Deleting left..." << endl;
+
+			//if it is the root, set that to null rather than the parent
+			if (node == parent) {
+				delete node;
+				node = nullptr;
+				return;
+			}
+			else {
+				delete node;
+				parent -> setLeft(nullptr);
+				return;
+			}
+		}
+		else {
+			cout << "Deleting right..." << endl;
+			
+			//if this is the root, set that to null rather than the parent
+			if (node == parent) {
+				delete node;
+				node = nullptr;
+				return;
+			}
+			else {
+				delete node;
+				parent -> setRight(nullptr);
+				return;
+			}
+		}
 	}
+
+	cout << "Node deleted." << endl;
 }
