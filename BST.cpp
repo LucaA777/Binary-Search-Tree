@@ -297,7 +297,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 		cout << "No-child deletion." << endl;
 		//figure out which side of the parent to delete
 		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
-			cout << "Deleting left..." << endl;
 
 			//if it is the root, set that to null rather than the parent
 			if (node == parent) {
@@ -312,7 +311,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			}
 		}
 		else {
-			cout << "Deleting right..." << endl;
 			
 			//if this is the root, set that to null rather than the parent
 			if (node == parent) {
@@ -326,6 +324,158 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 				return;
 			}
 		}
+	}
+
+	//if only has a left child
+	if (node -> getLeft() != nullptr && node -> getRight() == nullptr) {
+		cout << "Single child deletion." << endl;
+
+		//figure out which side of the parent to delete
+		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
+		
+			Node* replacement = node -> getLeft();
+			
+			//if the node has a parent, handle that
+			if (parent != node) {
+				parent -> setLeft(replacement);
+			}
+			
+			delete node;
+			node = replacement;
+			
+			return;
+		}
+		
+		//delete the other side instead
+		else {
+
+			Node* replacement = node -> getLeft();
+			
+			//if the node has a parent, handle that
+			if (parent != node) {
+				parent -> setRight(replacement);
+			}
+			
+			delete node;
+			node = replacement;
+			
+			return;
+
+		}
+	}	
+	
+	//if only has a right child
+	if (node -> getRight() != nullptr && node -> getLeft() == nullptr) {
+		cout << "Single child deletion." << endl;
+
+		//figure out which side of the parent to delete
+		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
+		
+			Node* replacement = node -> getRight();
+			
+			//if the node has a parent, handle that
+			if (parent != node) {
+				parent -> setLeft(replacement);
+			}
+			
+			delete node;
+			node = replacement;
+			
+			return;
+		}
+		
+		//delete the other side instead
+		else {
+
+			Node* replacement = node -> getRight();
+			
+			//if the node has a parent, handle that
+			if (parent != node) {
+				parent -> setRight(replacement);
+			}
+			
+			delete node;
+			node = replacement;
+			
+			return;
+		}
+	}	
+
+	//if has two children
+	if (node -> getRight() != nullptr && node -> getLeft() != nullptr) {
+		cout << "Two-child deletion." << endl;
+
+		//save the children
+		Node* leftChild = node -> getLeft();
+		Node* rightChild = node -> getRight();
+
+		//find the successor
+		//go one to the right and then go to the left until reaching the end
+		Node* current = node -> getRight();
+		Node* previous = nullptr;
+
+		//get to the successor
+		while (current -> getLeft() != nullptr) {
+			previous = current;
+			current = current -> getLeft();
+		}
+
+		//its ok if the replacement is null
+		Node* replacement;
+		if (current -> getRight() != nullptr) {
+			replacement = current -> getRight();
+		}
+		else {
+			replacement = nullptr;
+		}
+
+		//if its the root, do nothing
+		if (parent == node) {
+				
+		}
+
+		//indentify which side of the parent to delete, if it is not the root
+		else if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
+			parent -> setLeft(current);
+		}
+		else {
+			parent -> setRight(current);
+		}
+
+
+
+		cout << "Node: " << node -> getNum() << endl;
+		cout << "Left: " << leftChild -> getNum() << endl;
+		cout << "Right: " << rightChild -> getNum() << endl;
+		cout << "Current: " << current -> getNum() << endl;
+		cout << "Previous: " << previous -> getNum() << endl;
+
+		if (replacement != nullptr) {
+			cout << "Replacement: " << replacement -> getNum() << endl;
+		}
+		else {
+			cout << "Replacement: n/a" << endl;
+		}
+		
+		//shift the nodes and delete
+		delete node;
+		node = current;
+
+		if (leftChild != current) {
+			node -> setLeft(leftChild);
+		}
+
+		if (rightChild != current) {
+			node -> setRight(rightChild);
+		}
+
+		if (previous != nullptr) {
+			previous -> setLeft(replacement);
+		}
+
+
+
+
 	}
 
 	cout << "Node deleted." << endl;
