@@ -341,7 +341,7 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			}
 			
 			delete node;
-			node = replacement;
+			node = nullptr;
 			
 			return;
 		}
@@ -357,7 +357,7 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			}
 			
 			delete node;
-			node = replacement;
+			node = nullptr;
 			
 			return;
 
@@ -379,7 +379,7 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			}
 			
 			delete node;
-			node = replacement;
+			node = nullptr;
 			
 			return;
 		}
@@ -395,7 +395,7 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			}
 			
 			delete node;
-			node = replacement;
+			node = nullptr;
 			
 			return;
 		}
