@@ -1,3 +1,10 @@
+/*
+This is an implementation of a binary tree, with searching and deletion.
+Users can also use files to add many numbers at once.
+
+Author: Luca Ardanaz
+*/
+
 #include <iostream>
 #include <string>
 #include <queue>
