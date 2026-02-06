@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <fstream>
 
 #include "Node.h"
 
@@ -14,6 +15,7 @@ void parseNumbers(Node* &tree, string input);
 void deleteTree(Node* &tree);
 Node* searchTree(Node* node, int num);
 void removeFromTree(Node* &node, Node* &parent, int num);
+void processFile(Node* &node);
 
 int main() {
 
@@ -30,6 +32,7 @@ int main() {
 		//check if the input matches any commands, if not see if it's numbers
 		
 		if (input == "file") {
+			processFile(tree);
 			continue;
 		}
 		
@@ -121,7 +124,6 @@ void addNum(Node* &node, int num) {
 		}
 		//otherwise add this as the new left node
 		else {
-			cout << "Adding node to the left..." << endl;
 			node -> setLeft(new Node(num));
 		}
 	}
@@ -134,7 +136,6 @@ void addNum(Node* &node, int num) {
 		}
 		//otherwise add this as the new right node
 		else {
-			cout << "Adding node to the right..." << endl;
 			node -> setRight(new Node(num));
 		}
 	}	
@@ -289,12 +290,10 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 		return;
 	}
 
-	cout << "Found node and parent." << endl;
 	//figure out how to handle deletion
 	
 	//if no children, then simply delete
 	if (node -> getLeft() == nullptr && node -> getRight() == nullptr) {
-		cout << "No-child deletion." << endl;
 		//figure out which side of the parent to delete
 		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
 
@@ -328,7 +327,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 
 	//if only has a left child
 	if (node -> getLeft() != nullptr && node -> getRight() == nullptr) {
-		cout << "Single child deletion." << endl;
 			
 		Node* replacement = node -> getLeft();
 
@@ -352,7 +350,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 	
 	//if only has a right child
 	if (node -> getRight() != nullptr && node -> getLeft() == nullptr) {
-		cout << "Single child deletion." << endl;
 	
 		Node* replacement = node -> getRight();
 
@@ -377,8 +374,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 
 	//if has two children
 	if (node -> getRight() != nullptr && node -> getLeft() != nullptr) {
-		cout << "Two-child deletion." << endl;
-
 		//save the children
 		Node* leftChild = node -> getLeft();
 		Node* rightChild = node -> getRight();
@@ -400,11 +395,6 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 			replacement = successor -> getRight();
 		}
 
-		cout << "Node: " << node -> getNum() << endl;
-		cout << "Left: " << leftChild -> getNum() << endl;
-		cout << "Right: " << rightChild -> getNum() << endl;
-		cout << "Successor: " << successor -> getNum() << endl;
-		
 		//delete the node and set the sucessor to be it
 		delete node;
 		node = successor;
@@ -425,6 +415,43 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 
 
 	}
+}
 
-	cout << "Node deleted." << endl;
+void processFile(Node* &node) {
+	
+	//first process the entire file to see if it is all valid
+	//then add it to the tree
+
+	cout << "Enter the file name: " << endl;
+	string fileName;
+	getline(cin, fileName);
+	
+	try {
+		fstream file(fileName);
+		
+		//store the numbers in a queue
+		queue<int>* numbers = new queue<int>();
+	
+		int num;
+		string numStr;		
+
+		//push the numbers into the queue
+		while (getline(file, numStr)) {
+			num = stoi(numStr);
+			numbers -> push(num);
+		} 
+
+		//then add all of the numbers in the queue to the tree
+		while (!numbers -> empty()) {
+			addNum(node, numbers -> front());
+			numbers -> pop();			
+		}
+
+		file.close();
+
+	}
+	catch(...) {
+		return;
+	}
+
 }
