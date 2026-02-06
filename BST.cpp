@@ -329,77 +329,51 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 	//if only has a left child
 	if (node -> getLeft() != nullptr && node -> getRight() == nullptr) {
 		cout << "Single child deletion." << endl;
+			
+		Node* replacement = node -> getLeft();
 
-		//figure out which side of the parent to delete
-		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
-		
-			Node* replacement = node -> getLeft();
-			
-			//if the node has a parent, handle that
-			if (parent != node) {
-				parent -> setLeft(replacement);
-			}
-			
+		if (node == parent) {
 			delete node;
-			node = nullptr;
-			
-			return;
+			node = replacement;
 		}
-		
-		//delete the other side instead
-		else {
 
-			Node* replacement = node -> getLeft();
-			
-			//if the node has a parent, handle that
-			if (parent != node) {
-				parent -> setRight(replacement);
-			}
-			
+		else if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
 			delete node;
-			node = nullptr;
-			
-			return;
-
+			parent -> setLeft(replacement);
 		}
+
+		else if (parent -> getRight() != nullptr && parent -> getRight() -> getNum() == num) {
+			delete node;
+			parent -> setRight(replacement);
+		}
+
+		return;
 	}	
 	
 	//if only has a right child
 	if (node -> getRight() != nullptr && node -> getLeft() == nullptr) {
 		cout << "Single child deletion." << endl;
+	
+		Node* replacement = node -> getRight();
 
-		//figure out which side of the parent to delete
-		if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
-		
-			Node* replacement = node -> getRight();
-			
-			//if the node has a parent, handle that
-			if (parent != node) {
-				parent -> setLeft(replacement);
-			}
-			
+		if (node == parent) {
 			delete node;
-			node = nullptr;
-			
-			return;
+			node = replacement;
 		}
-		
-		//delete the other side instead
-		else {
 
-			Node* replacement = node -> getRight();
-			
-			//if the node has a parent, handle that
-			if (parent != node) {
-				parent -> setRight(replacement);
-			}
-			
+		else if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
 			delete node;
-			node = nullptr;
-			
-			return;
+			parent -> setLeft(replacement);
 		}
-	}	
+
+		else if (parent -> getRight() != nullptr && parent -> getRight() -> getNum() == num) {
+			delete node;
+			parent -> setRight(replacement);
+		}
+
+		return;
+
+		}	
 
 	//if has two children
 	if (node -> getRight() != nullptr && node -> getLeft() != nullptr) {
@@ -411,69 +385,43 @@ void removeFromTree(Node* &node, Node* &parent, int num) {
 
 		//find the successor
 		//go one to the right and then go to the left until reaching the end
-		Node* current = node -> getRight();
+		Node* successor = node -> getRight();
 		Node* previous = nullptr;
 
 		//get to the successor
-		while (current -> getLeft() != nullptr) {
-			previous = current;
-			current = current -> getLeft();
+		while (successor -> getLeft() != nullptr) {
+			previous = successor;
+			successor = successor -> getLeft();
 		}
 
 		//its ok if the replacement is null
-		Node* replacement;
-		if (current -> getRight() != nullptr) {
-			replacement = current -> getRight();
+		Node* replacement = nullptr;
+		if (successor -> getRight() != nullptr) {
+			replacement = successor -> getRight();
 		}
-		else {
-			replacement = nullptr;
-		}
-
-		//if its the root, do nothing
-		if (parent == node) {
-				
-		}
-
-		//indentify which side of the parent to delete, if it is not the root
-		else if (parent -> getLeft() != nullptr && parent -> getLeft() -> getNum() == num) {
-			parent -> setLeft(current);
-		}
-		else {
-			parent -> setRight(current);
-		}
-
-
 
 		cout << "Node: " << node -> getNum() << endl;
 		cout << "Left: " << leftChild -> getNum() << endl;
 		cout << "Right: " << rightChild -> getNum() << endl;
-		cout << "Current: " << current -> getNum() << endl;
-		cout << "Previous: " << previous -> getNum() << endl;
+		cout << "Successor: " << successor -> getNum() << endl;
+		
+		//delete the node and set the sucessor to be it
+		delete node;
+		node = successor;
 
-		if (replacement != nullptr) {
-			cout << "Replacement: " << replacement -> getNum() << endl;
-		}
-		else {
-			cout << "Replacement: n/a" << endl;
+		//make sure that the node right before the successor points to the elements after the successor
+		if (previous != nullptr) {
+			previous -> setLeft(successor -> getRight());
 		}
 		
-		//shift the nodes and delete
-		delete node;
-		node = current;
-
-		if (leftChild != current) {
+		//make sure that we aren't linking a copy of the new node to itself
+		if (leftChild != successor) {
 			node -> setLeft(leftChild);
 		}
 
-		if (rightChild != current) {
+		if (rightChild != successor) {
 			node -> setRight(rightChild);
 		}
-
-		if (previous != nullptr) {
-			previous -> setLeft(replacement);
-		}
-
-
 
 
 	}
